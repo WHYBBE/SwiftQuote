@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02184E7FB52160986E59CC5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1512CB78B1447FA23BF97C3E /* Assets.xcassets */; };
 		0D3D21E327AC67EAFF0885ED /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */; };
 		2678AA0B08606D7F13C896FE /* L.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA133459A66835D11F854DC6 /* L.swift */; };
 		4F4CF7B4B6125C548BEAC5B0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11CD0E0E37B518BFE74F7C7 /* SettingsView.swift */; };
 		51133194C065A09622717A43 /* SwiftQuoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C60D0CB77713E3F62E9CD4 /* SwiftQuoteApp.swift */; };
 		9316A51B2181C89DA7C552E9 /* InputPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EC298DCB72CC3BF92091CF /* InputPanel.swift */; };
+		C2681E5B13F868E2A24134F6 /* AboutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D997CB975306C8413B7273C /* AboutWindow.swift */; };
 		C69CBEC0A487907C279D1477 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEB503E576D1011C8CC61CF /* AppSettings.swift */; };
 		E7D6B641999640E6679EC23F /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042AFFA9BEDC5FF28D2382B /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1512CB78B1447FA23BF97C3E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3042AFFA9BEDC5FF28D2382B /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		55C60D0CB77713E3F62E9CD4 /* SwiftQuoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftQuoteApp.swift; sourceTree = "<group>"; };
+		9D997CB975306C8413B7273C /* AboutWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutWindow.swift; sourceTree = "<group>"; };
 		BA133459A66835D11F854DC6 /* L.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L.swift; sourceTree = "<group>"; };
 		BCEB503E576D1011C8CC61CF /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
@@ -44,9 +48,18 @@
 			);
 			sourceTree = "<group>";
 		};
+		C9EADFF51E4D790E03ACE71B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1512CB78B1447FA23BF97C3E /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		CF3CF60132A65DA167DC81A6 /* SwiftQuote */ = {
 			isa = PBXGroup;
 			children = (
+				9D997CB975306C8413B7273C /* AboutWindow.swift */,
 				BCEB503E576D1011C8CC61CF /* AppSettings.swift */,
 				D3EC298DCB72CC3BF92091CF /* InputPanel.swift */,
 				BA133459A66835D11F854DC6 /* L.swift */,
@@ -54,6 +67,7 @@
 				C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */,
 				3042AFFA9BEDC5FF28D2382B /* StatusBarController.swift */,
 				55C60D0CB77713E3F62E9CD4 /* SwiftQuoteApp.swift */,
+				C9EADFF51E4D790E03ACE71B /* Resources */,
 			);
 			name = SwiftQuote;
 			path = Sources/SwiftQuote;
@@ -67,6 +81,7 @@
 			buildConfigurationList = 2EFDF9DB9A9E7E485D52FB3B /* Build configuration list for PBXNativeTarget "SwiftQuote" */;
 			buildPhases = (
 				F2C710F2C971F4797169C6B3 /* Sources */,
+				A5B9CBFF36764FB9FD97B902 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -109,11 +124,23 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		A5B9CBFF36764FB9FD97B902 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02184E7FB52160986E59CC5A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F2C710F2C971F4797169C6B3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2681E5B13F868E2A24134F6 /* AboutWindow.swift in Sources */,
 				C69CBEC0A487907C279D1477 /* AppSettings.swift in Sources */,
 				9316A51B2181C89DA7C552E9 /* InputPanel.swift in Sources */,
 				2678AA0B08606D7F13C896FE /* L.swift in Sources */,
@@ -196,6 +223,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -204,6 +232,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.whynbnb.SwiftQuote;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
@@ -216,6 +245,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -224,6 +254,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.whynbnb.SwiftQuote;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;

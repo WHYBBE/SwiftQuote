@@ -94,6 +94,16 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    // MARK: - 版本信息（SPM 裸跑无 Info.plist 时回退到开发版本 1.0）
+
+    var versionString: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    }
+
+    var buildString: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "dev"
+    }
+
     func applyAppearance() {
         switch appearance {
         case .system: NSApp.appearance = nil

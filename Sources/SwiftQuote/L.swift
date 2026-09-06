@@ -49,6 +49,13 @@ struct L {
     var groupStartup: String  { t("启动", "Startup") }
     var launchAtLogin: String { t("开机自启", "Launch at Login") }
     var launchAtLoginUnavailable: String { t("需以打包的 App 形式运行才可用", "Requires running as a bundled app") }
+    var menuAbout: String     { t("关于", "About") }
+    var aboutTitle: String    { t("关于 SwiftQuote", "About SwiftQuote") }
+    var aboutDescription: String { t("轻量级 macOS 菜单栏自定义文字应用", "A lightweight macOS menu bar custom text app") }
+    func aboutVersion(_ v: String, _ b: String) -> String {
+        t("版本 \(v) (\(b))", "Version \(v) (\(b))")
+    }
+    let repositoryURL = "https://github.com/WHYBBE/SwiftQuote"
     var groupPresets: String { t("预设", "Presets") }
     var apply: String       { t("应用", "Apply") }
 

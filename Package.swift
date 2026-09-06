@@ -7,7 +7,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "SwiftQuote",
-            path: "Sources/SwiftQuote"
+            path: "Sources/SwiftQuote",
+            resources: [.process("Resources")]
         )
     ]
 )

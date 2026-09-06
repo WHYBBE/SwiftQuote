@@ -7,6 +7,7 @@ final class StatusBarController: NSObject, ObservableObject {
     private var statusItem: NSStatusItem!
     private var inputPanel: InputPanel?
     private var settingsWindowController: SettingsWindowController?
+    private var aboutWindowController: AboutWindowController?
     private let settings = AppSettings.shared
 
     func setup() {
@@ -79,6 +80,10 @@ final class StatusBarController: NSObject, ObservableObject {
         }
 
         menu.addItem(.separator())
+        let about = NSMenuItem(title: s.menuAbout, action: #selector(onAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
+
         let quit = NSMenuItem(title: s.menuQuit, action: #selector(onQuit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
@@ -122,6 +127,17 @@ final class StatusBarController: NSObject, ObservableObject {
 
     @objc private func onInput() {
         showInputPanel()
+    }
+
+    @objc private func onAbout() {
+        if aboutWindowController == nil {
+            aboutWindowController = AboutWindowController()
+        }
+        aboutWindowController?.showWindow(nil)
+        aboutWindowController?.window?.center()
+        NSApp.activate(ignoringOtherApps: true)
+        aboutWindowController?.window?.makeKeyAndOrderFront(nil)
+        aboutWindowController?.window?.orderFrontRegardless()
     }
 
     @objc private func onSettings() {
