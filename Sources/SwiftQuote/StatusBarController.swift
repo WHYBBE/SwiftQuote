@@ -8,7 +8,6 @@ final class StatusBarController: NSObject, ObservableObject {
     private var inputPanel: InputPanel?
     private var settingsWindowController: SettingsWindowController?
     private let settings = AppSettings.shared
-    private var perCharColors = false
 
     func setup() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -35,7 +34,8 @@ final class StatusBarController: NSObject, ObservableObject {
                 attributes: [.font: settings.font, .foregroundColor: color]))
         }
         button.attributedTitle = str
-        statusItem.length = min(button.attributedTitle.size().width + 12, settings.maxWidth)
+        // 紧凑布局：长度 = 文字实际宽度（cell 内部零补白；剩余间距是系统项间距）
+        statusItem.length = min(ceil(str.size().width), settings.maxWidth)
     }
 
     @objc private func onClick(_ sender: NSStatusBarButton) {
@@ -78,7 +78,7 @@ final class StatusBarController: NSObject, ObservableObject {
         menu.addItem(quit)
 
         statusItem.menu = menu
-        statusItem.button?.performClick(nil)
+        statusItem.button?.performClick(nil)   // 由系统弹出，定位最精确
         statusItem.menu = nil
     }
 
