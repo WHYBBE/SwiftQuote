@@ -1,0 +1,26 @@
+name: SwiftQuote
+options:
+  bundleIdPrefix: me.whynbnb
+  deploymentTarget:
+    macOS: "13.0"
+
+targets:
+  SwiftQuote:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/SwiftQuote
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: me.whynbnb.SwiftQuote
+        SWIFT_VERSION: "5.9"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_IDENTITY: "-"
+    scheme:
+      buildTargets:
+        SwiftQuote: all
+      run:
+        config: Debug
