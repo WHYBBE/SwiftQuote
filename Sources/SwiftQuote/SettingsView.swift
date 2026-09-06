@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 通用页：主题 / 语言（默认 Tab）
+/// 通用页：主题 / 语言 / 开机自启（默认 Tab）
 struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettings
 
@@ -24,6 +24,17 @@ struct GeneralSettingsView: View {
                 }
                 .labelsHidden()
                 .pickerStyle(.segmented)
+            }
+            Section(s.groupStartup) {
+                Toggle(s.launchAtLogin, isOn: Binding(
+                    get: { settings.launchAtLogin },
+                    set: { settings.launchAtLogin = $0 }))
+                    .disabled(!settings.loginItemAvailable)
+                if !settings.loginItemAvailable {
+                    Text(s.launchAtLoginUnavailable)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .formStyle(.grouped)

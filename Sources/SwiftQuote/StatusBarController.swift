@@ -67,6 +67,12 @@ final class StatusBarController: NSObject, ObservableObject {
         historyToggle.state = settings.trackHistory ? .on : .off
         menu.addItem(historyToggle)
 
+        let loginToggle = NSMenuItem(title: s.launchAtLogin, action: #selector(onToggleLogin), keyEquivalent: "")
+        loginToggle.target = self
+        loginToggle.state = settings.launchAtLogin ? .on : .off
+        loginToggle.isEnabled = settings.loginItemAvailable   // SPM 裸跑时禁用
+        menu.addItem(loginToggle)
+
         if settings.trackHistory && !settings.history.isEmpty {
             menu.addItem(.separator())
             historyHeaderMenu(menu)
@@ -108,6 +114,10 @@ final class StatusBarController: NSObject, ObservableObject {
 
     @objc private func onToggleHistory() {
         settings.trackHistory.toggle()
+    }
+
+    @objc private func onToggleLogin() {
+        settings.launchAtLogin.toggle()
     }
 
     @objc private func onInput() {

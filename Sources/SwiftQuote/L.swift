@@ -46,6 +46,9 @@ struct L {
     var appearanceDark: String   { t("深色", "Dark") }
     var groupLanguage: String { t("语言", "Language") }
     var languageSystem: String  { t("跟随系统", "System") }
+    var groupStartup: String  { t("启动", "Startup") }
+    var launchAtLogin: String { t("开机自启", "Launch at Login") }
+    var launchAtLoginUnavailable: String { t("需以打包的 App 形式运行才可用", "Requires running as a bundled app") }
     var groupPresets: String { t("预设", "Presets") }
     var apply: String       { t("应用", "Apply") }
 

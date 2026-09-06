@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D3D21E327AC67EAFF0885ED /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */; };
+		2678AA0B08606D7F13C896FE /* L.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA133459A66835D11F854DC6 /* L.swift */; };
 		4F4CF7B4B6125C548BEAC5B0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11CD0E0E37B518BFE74F7C7 /* SettingsView.swift */; };
 		51133194C065A09622717A43 /* SwiftQuoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C60D0CB77713E3F62E9CD4 /* SwiftQuoteApp.swift */; };
 		9316A51B2181C89DA7C552E9 /* InputPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EC298DCB72CC3BF92091CF /* InputPanel.swift */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		3042AFFA9BEDC5FF28D2382B /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		55C60D0CB77713E3F62E9CD4 /* SwiftQuoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftQuoteApp.swift; sourceTree = "<group>"; };
+		BA133459A66835D11F854DC6 /* L.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L.swift; sourceTree = "<group>"; };
 		BCEB503E576D1011C8CC61CF /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		D05C61CDA51DB6ED76923FB2 /* SwiftQuote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftQuote.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +49,7 @@
 			children = (
 				BCEB503E576D1011C8CC61CF /* AppSettings.swift */,
 				D3EC298DCB72CC3BF92091CF /* InputPanel.swift */,
+				BA133459A66835D11F854DC6 /* L.swift */,
 				F11CD0E0E37B518BFE74F7C7 /* SettingsView.swift */,
 				C10D02F3E6B7332F198DDC76 /* SettingsWindowController.swift */,
 				3042AFFA9BEDC5FF28D2382B /* StatusBarController.swift */,
@@ -113,6 +116,7 @@
 			files = (
 				C69CBEC0A487907C279D1477 /* AppSettings.swift in Sources */,
 				9316A51B2181C89DA7C552E9 /* InputPanel.swift in Sources */,
+				2678AA0B08606D7F13C896FE /* L.swift in Sources */,
 				4F4CF7B4B6125C548BEAC5B0 /* SettingsView.swift in Sources */,
 				0D3D21E327AC67EAFF0885ED /* SettingsWindowController.swift in Sources */,
 				E7D6B641999640E6679EC23F /* StatusBarController.swift in Sources */,

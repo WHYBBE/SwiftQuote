@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import ServiceManagement
 
 /// 一个颜色条目：稳定 id（用于 SwiftUI 列表身份）+ 颜色 hex
 struct ColorEntry: Identifiable, Codable, Equatable {
@@ -73,6 +74,24 @@ final class AppSettings: ObservableObject {
         history = d.stringArray(forKey: "history") ?? []
         appearance = AppAppearance(rawValue: d.string(forKey: "appearance") ?? "") ?? .system
         language = AppLanguage(rawValue: d.string(forKey: "appLanguage") ?? "") ?? .system
+    }
+
+    // MARK: - 开机自启（SMAppService；裸跑 SwiftPM 可执行文件时不可用）
+
+    /// 无 Bundle ID（非打包 App）时无法注册登录项
+    var loginItemAvailable: Bool { Bundle.main.bundleIdentifier != nil }
+
+    var launchAtLogin: Bool {
+        get { SMAppService.mainApp.status == .enabled }
+        set {
+            guard loginItemAvailable else { return }
+            do {
+                if newValue { try SMAppService.mainApp.register() }
+                else { try SMAppService.mainApp.unregister() }
+            } catch {
+                NSLog("登录项切换失败: \(error.localizedDescription)")
+            }
+        }
     }
 
     func applyAppearance() {
