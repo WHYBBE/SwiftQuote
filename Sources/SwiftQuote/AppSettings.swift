@@ -42,6 +42,15 @@ final class AppSettings: ObservableObject {
     @Published var history: [String] {
         didSet { UserDefaults.standard.set(history, forKey: "history") }
     }
+    @Published var appearance: AppAppearance {
+        didSet {
+            UserDefaults.standard.set(appearance.rawValue, forKey: "appearance")
+            applyAppearance()
+        }
+    }
+    @Published var language: AppLanguage {
+        didSet { UserDefaults.standard.set(language.rawValue, forKey: "appLanguage") }
+    }
 
     private init() {
         let d = UserDefaults.standard
@@ -62,7 +71,29 @@ final class AppSettings: ObservableObject {
             colorEntries = legacy.map { ColorEntry(hex: $0) }
         }
         history = d.stringArray(forKey: "history") ?? []
+        appearance = AppAppearance(rawValue: d.string(forKey: "appearance") ?? "") ?? .system
+        language = AppLanguage(rawValue: d.string(forKey: "appLanguage") ?? "") ?? .system
     }
+
+    func applyAppearance() {
+        switch appearance {
+        case .system: NSApp.appearance = nil
+        case .light:  NSApp.appearance = NSAppearance(named: .aqua)
+        case .dark:   NSApp.appearance = NSAppearance(named: .darkAqua)
+        }
+    }
+
+    var isChinese: Bool {
+        switch language {
+        case .chinese: return true
+        case .english: return false
+        case .system:
+            return (Locale.preferredLanguages.first ?? "").hasPrefix("zh")
+        }
+    }
+
+    /// 当前语言下的文案
+    var strings: L { L(isChinese: isChinese) }
 
     var displayText: String { prefix + text + suffix }
 

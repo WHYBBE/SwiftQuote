@@ -51,17 +51,18 @@ final class StatusBarController: NSObject, ObservableObject {
     private func showMenu() {
         let menu = NSMenu()
 
-        let input = NSMenuItem(title: "输入…", action: #selector(onInput), keyEquivalent: "")
+        let s = settings.strings
+        let input = NSMenuItem(title: s.menuInput, action: #selector(onInput), keyEquivalent: "")
         input.target = self
         input.image = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)
         menu.addItem(input)
 
-        let settingsItem = NSMenuItem(title: "设置…", action: #selector(onSettings), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: s.menuSettings, action: #selector(onSettings), keyEquivalent: ",")
         settingsItem.target = self
         settingsItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)
         menu.addItem(settingsItem)
 
-        let historyToggle = NSMenuItem(title: "跟踪历史", action: #selector(onToggleHistory), keyEquivalent: "")
+        let historyToggle = NSMenuItem(title: s.trackHistory, action: #selector(onToggleHistory), keyEquivalent: "")
         historyToggle.target = self
         historyToggle.state = settings.trackHistory ? .on : .off
         menu.addItem(historyToggle)
@@ -72,7 +73,7 @@ final class StatusBarController: NSObject, ObservableObject {
         }
 
         menu.addItem(.separator())
-        let quit = NSMenuItem(title: "退出", action: #selector(onQuit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: s.menuQuit, action: #selector(onQuit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
 
@@ -82,7 +83,7 @@ final class StatusBarController: NSObject, ObservableObject {
     }
 
     private func historyHeaderMenu(_ menu: NSMenu) {
-        let header = NSMenuItem(title: "历史", action: nil, keyEquivalent: "")
+        let header = NSMenuItem(title: settings.strings.historyHeader, action: nil, keyEquivalent: "")
         header.isEnabled = false
         menu.addItem(header)
         for item in settings.history.prefix(5) {
@@ -91,7 +92,7 @@ final class StatusBarController: NSObject, ObservableObject {
             mi.representedObject = item
             menu.addItem(mi)
         }
-        let clear = NSMenuItem(title: "清除历史", action: #selector(onClearHistory), keyEquivalent: "")
+        let clear = NSMenuItem(title: settings.strings.clearHistory, action: #selector(onClearHistory), keyEquivalent: "")
         clear.target = self
         menu.addItem(clear)
     }

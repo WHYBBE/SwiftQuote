@@ -1,48 +1,61 @@
 import AppKit
 import SwiftUI
+import Combine
 
 /// 系统偏好设置风格窗口：NSTabViewController 的 toolbar 模式
 final class SettingsWindowController: NSWindowController {
 
+    private var items: [NSTabViewItem] = []
+    private var cancellables = Set<AnyCancellable>()
+
     init() {
         let settings = AppSettings.shared
+        let s = settings.strings
 
-        let generalVC = NSHostingController(
-            rootView: GeneralSettingsView().environmentObject(settings))
-        generalVC.preferredContentSize = NSSize(width: 440, height: 600)
-        let generalItem = NSTabViewItem(viewController: generalVC)
-        generalItem.label = "设置"
-        generalItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "设置")
+        func makeTab(_ view: some View,
+                     label: String,
+                     symbol: String) -> NSTabViewItem {
+            let vc = NSHostingController(rootView: view.environmentObject(settings))
+            vc.preferredContentSize = NSSize(width: 440, height: 600)
+            let item = NSTabViewItem(viewController: vc)
+            item.label = label
+            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: label)
+            return item
+        }
 
-        let colorsVC = NSHostingController(
-            rootView: ColorsSettingsView().environmentObject(settings))
-        colorsVC.preferredContentSize = NSSize(width: 440, height: 600)
-        let colorsItem = NSTabViewItem(viewController: colorsVC)
-        colorsItem.label = "颜色"
-        colorsItem.image = NSImage(systemSymbolName: "paintpalette", accessibilityDescription: "颜色")
-
-        let historyVC = NSHostingController(
-            rootView: HistorySettingsView().environmentObject(settings))
-        historyVC.preferredContentSize = NSSize(width: 440, height: 600)
-        let historyItem = NSTabViewItem(viewController: historyVC)
-        historyItem.label = "历史记录"
-        historyItem.image = NSImage(systemSymbolName: "clock", accessibilityDescription: "历史记录")
+        let generalItem = makeTab(GeneralSettingsView(), label: s.tabGeneral, symbol: "gearshape")
+        let colorsItem  = makeTab(ColorsSettingsView(),  label: s.tabColors,  symbol: "paintpalette")
+        let historyItem = makeTab(HistorySettingsView(), label: s.tabHistory, symbol: "clock")
+        items = [generalItem, colorsItem, historyItem]
 
         let tabController = NSTabViewController()
         tabController.tabStyle = .toolbar
-        tabController.addTabViewItem(generalItem)
-        tabController.addTabViewItem(colorsItem)
-        tabController.addTabViewItem(historyItem)
+        items.forEach { tabController.addTabViewItem($0) }
 
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 440, height: 600),
             styleMask: [.titled, .closable],
             backing: .buffered, defer: false)
-        window.title = generalItem.label
+        window.title = s.tabGeneral
         window.contentViewController = tabController
         window.center()
 
         super.init(window: window)
+
+        // 语言切换时更新 Tab 标签与窗口标题
+        settings.$language.sink { [weak self] _ in
+            guard let self else { return }
+            let labels = [
+                settings.strings.tabGeneral,
+                settings.strings.tabColors,
+                settings.strings.tabHistory,
+            ]
+            for (item, label) in zip(self.items, labels) {
+                item.label = label
+            }
+            self.window?.title = labels[tabController.selectedTabViewItemIndex]
+        }
+        .store(in: &cancellables)
     }
 
     required init?(coder: NSCoder) {

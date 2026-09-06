@@ -23,7 +23,7 @@ final class InputPanel: NSPanel, NSTextFieldDelegate {
         bg.layer?.cornerRadius = 8
         contentView = bg
 
-        textField.placeholderString = "输入内容，回车确认"
+        textField.placeholderString = settings.strings.inputPlaceholder
         textField.isBezeled = false
         textField.drawsBackground = false
         textField.focusRingType = .none

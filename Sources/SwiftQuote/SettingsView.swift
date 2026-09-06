@@ -4,22 +4,23 @@ struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettings
 
     var body: some View {
-        ScrollView {
+        let s = settings.strings
+        return ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                GroupBox("文字") {
+                GroupBox(s.groupText) {
                     VStack(alignment: .leading, spacing: 8) {
-                        labeledField("前缀", text: $settings.prefix)
-                        labeledField("后缀", text: $settings.suffix)
-                        Toggle("加粗", isOn: $settings.bold)
+                        labeledField(s.prefix, text: $settings.prefix)
+                        labeledField(s.suffix, text: $settings.suffix)
+                        Toggle(s.bold, isOn: $settings.bold)
                         HStack {
-                            Text("文字大小")
+                            Text(s.fontSize)
                             Slider(value: $settings.fontSize, in: 9...24, step: 0.5)
                             Text("\(settings.fontSize, specifier: "%.1f")")
                                 .monospacedDigit()
                                 .frame(width: 34, alignment: .trailing)
                         }
                         HStack {
-                            Text("最大宽度")
+                            Text(s.maxWidth)
                             Slider(value: $settings.maxWidth, in: 40...400, step: 5)
                             Text("\(Int(settings.maxWidth))")
                                 .monospacedDigit()
@@ -29,7 +30,29 @@ struct GeneralSettingsView: View {
                     .padding(8)
                 }
 
-                GroupBox("预设") {
+                GroupBox(s.groupAppearance) {
+                    Picker("", selection: $settings.appearance) {
+                        Text(s.appearanceSystem).tag(AppAppearance.system)
+                        Text(s.appearanceLight).tag(AppAppearance.light)
+                        Text(s.appearanceDark).tag(AppAppearance.dark)
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(8)
+                }
+
+                GroupBox(s.groupLanguage) {
+                    Picker("", selection: $settings.language) {
+                        Text(s.languageSystem).tag(AppLanguage.system)
+                        Text("中文").tag(AppLanguage.chinese)
+                        Text("English").tag(AppLanguage.english)
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(8)
+                }
+
+                GroupBox(s.groupPresets) {
                     VStack(spacing: 4) {
                         ForEach(Preset.all) { preset in
                             HStack {
@@ -37,7 +60,7 @@ struct GeneralSettingsView: View {
                                 Spacer()
                                 Text(preset.prefix + preset.text + preset.suffix)
                                     .foregroundStyle(.secondary)
-                                Button("应用") {
+                                Button(s.apply) {
                                     settings.prefix = preset.prefix
                                     settings.suffix = preset.suffix
                                     if !preset.text.isEmpty {
@@ -52,9 +75,9 @@ struct GeneralSettingsView: View {
                     .padding(8)
                 }
 
-                GroupBox("历史") {
+                GroupBox(s.tabHistory) {
                     HStack {
-                        Toggle("跟踪历史", isOn: $settings.trackHistory)
+                        Toggle(s.trackHistory, isOn: $settings.trackHistory)
                     }
                     .padding(8)
                 }
@@ -79,10 +102,11 @@ struct ColorsSettingsView: View {
     @State private var newColor = Color.white
 
     var body: some View {
+        let s = settings.strings
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                ColorPicker("添加颜色", selection: $newColor, supportsOpacity: false)
-                Button("添加") {
+                ColorPicker(s.addColor, selection: $newColor, supportsOpacity: false)
+                Button(s.add) {
                     settings.colorEntries.append(ColorEntry(hex: NSColor(newColor).hexString))
                 }
                 Spacer()
@@ -109,7 +133,7 @@ struct ColorsSettingsView: View {
                 }
             }
 
-            Text("颜色依次循环应用到每个字符；拖动可排序")
+            Text(settings.strings.colorsHint)
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -154,15 +178,16 @@ struct HistorySettingsView: View {
     @EnvironmentObject var settings: AppSettings
 
     var body: some View {
+        let s = settings.strings
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Toggle("跟踪历史", isOn: $settings.trackHistory)
+                Toggle(s.trackHistory, isOn: $settings.trackHistory)
                 Spacer()
                 if !settings.history.isEmpty {
                     Button(role: .destructive) {
                         settings.history = []
                     } label: {
-                        Label("清空全部", systemImage: "trash")
+                        Label(s.clearAll, systemImage: "trash")
                     }
                 }
             }
@@ -171,7 +196,7 @@ struct HistorySettingsView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Text("暂无历史记录")
+                    Text(s.noHistory)
                         .foregroundStyle(.secondary)
                     Spacer()
                 }
@@ -184,11 +209,11 @@ struct HistorySettingsView: View {
                                 .lineLimit(1)
                             Spacer()
                             if item == settings.text {
-                                Text("当前")
+                                Text(s.current)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
-                            Button("应用") {
+                            Button(s.apply) {
                                 settings.text = item
                             }
                             .controlSize(.small)
