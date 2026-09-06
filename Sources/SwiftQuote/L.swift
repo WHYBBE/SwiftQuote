@@ -28,7 +28,8 @@ struct L {
     var inputPlaceholder: String { t("输入内容，回车确认", "Type and press Return") }
 
     // MARK: 设置窗口 Tab
-    var tabGeneral: String { t("设置", "General") }
+    var tabGeneral: String { t("通用", "General") }
+    var tabText: String { t("文字", "Text") }
     var tabColors: String  { t("颜色", "Colors") }
     var tabHistory: String { t("历史记录", "History") }
 

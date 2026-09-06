@@ -24,9 +24,10 @@ final class SettingsWindowController: NSWindowController {
         }
 
         let generalItem = makeTab(GeneralSettingsView(), label: s.tabGeneral, symbol: "gearshape")
+        let textItem    = makeTab(TextSettingsView(),    label: s.tabText,    symbol: "textformat")
         let colorsItem  = makeTab(ColorsSettingsView(),  label: s.tabColors,  symbol: "paintpalette")
         let historyItem = makeTab(HistorySettingsView(), label: s.tabHistory, symbol: "clock")
-        items = [generalItem, colorsItem, historyItem]
+        items = [generalItem, textItem, colorsItem, historyItem]
 
         let tabController = NSTabViewController()
         tabController.tabStyle = .toolbar
@@ -42,11 +43,20 @@ final class SettingsWindowController: NSWindowController {
 
         super.init(window: window)
 
+        // Tab 切换时更新窗口标题（不能直接改 tabView.delegate，用 KVO 代替）
+        tabController.publisher(for: \.selectedTabViewItemIndex)
+            .sink { [weak self] index in
+                guard let self, self.items.indices.contains(index) else { return }
+                self.window?.title = self.items[index].label
+            }
+            .store(in: &cancellables)
+
         // 语言切换时更新 Tab 标签与窗口标题
         settings.$language.sink { [weak self] _ in
             guard let self else { return }
             let labels = [
                 settings.strings.tabGeneral,
+                settings.strings.tabText,
                 settings.strings.tabColors,
                 settings.strings.tabHistory,
             ]

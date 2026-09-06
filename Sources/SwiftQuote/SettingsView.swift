@@ -1,6 +1,38 @@
 import SwiftUI
 
+/// 通用页：主题 / 语言（默认 Tab）
 struct GeneralSettingsView: View {
+    @EnvironmentObject var settings: AppSettings
+
+    var body: some View {
+        let s = settings.strings
+        Form {
+            Section(s.groupAppearance) {
+                Picker("", selection: $settings.appearance) {
+                    Text(s.appearanceSystem).tag(AppAppearance.system)
+                    Text(s.appearanceLight).tag(AppAppearance.light)
+                    Text(s.appearanceDark).tag(AppAppearance.dark)
+                }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+            }
+            Section(s.groupLanguage) {
+                Picker("", selection: $settings.language) {
+                    Text(s.languageSystem).tag(AppLanguage.system)
+                    Text("中文").tag(AppLanguage.chinese)
+                    Text("English").tag(AppLanguage.english)
+                }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+            }
+        }
+        .formStyle(.grouped)
+        .padding(.top, 12)
+    }
+}
+
+/// 文字页：前缀/后缀/样式/预设/历史开关
+struct TextSettingsView: View {
     @EnvironmentObject var settings: AppSettings
 
     var body: some View {
@@ -27,28 +59,6 @@ struct GeneralSettingsView: View {
                                 .frame(width: 34, alignment: .trailing)
                         }
                     }
-                    .padding(8)
-                }
-
-                GroupBox(s.groupAppearance) {
-                    Picker("", selection: $settings.appearance) {
-                        Text(s.appearanceSystem).tag(AppAppearance.system)
-                        Text(s.appearanceLight).tag(AppAppearance.light)
-                        Text(s.appearanceDark).tag(AppAppearance.dark)
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.segmented)
-                    .padding(8)
-                }
-
-                GroupBox(s.groupLanguage) {
-                    Picker("", selection: $settings.language) {
-                        Text(s.languageSystem).tag(AppLanguage.system)
-                        Text("中文").tag(AppLanguage.chinese)
-                        Text("English").tag(AppLanguage.english)
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.segmented)
                     .padding(8)
                 }
 
