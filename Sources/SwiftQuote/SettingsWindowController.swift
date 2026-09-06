@@ -14,6 +14,13 @@ final class SettingsWindowController: NSWindowController {
         generalItem.label = "设置"
         generalItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "设置")
 
+        let colorsVC = NSHostingController(
+            rootView: ColorsSettingsView().environmentObject(settings))
+        colorsVC.preferredContentSize = NSSize(width: 440, height: 600)
+        let colorsItem = NSTabViewItem(viewController: colorsVC)
+        colorsItem.label = "颜色"
+        colorsItem.image = NSImage(systemSymbolName: "paintpalette", accessibilityDescription: "颜色")
+
         let historyVC = NSHostingController(
             rootView: HistorySettingsView().environmentObject(settings))
         historyVC.preferredContentSize = NSSize(width: 440, height: 600)
@@ -24,6 +31,7 @@ final class SettingsWindowController: NSWindowController {
         let tabController = NSTabViewController()
         tabController.tabStyle = .toolbar
         tabController.addTabViewItem(generalItem)
+        tabController.addTabViewItem(colorsItem)
         tabController.addTabViewItem(historyItem)
 
         let window = NSWindow(

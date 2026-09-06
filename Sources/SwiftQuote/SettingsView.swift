@@ -2,7 +2,6 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettings
-    @State private var newColor = Color.white
 
     var body: some View {
         ScrollView {
@@ -26,32 +25,6 @@ struct GeneralSettingsView: View {
                                 .monospacedDigit()
                                 .frame(width: 34, alignment: .trailing)
                         }
-                    }
-                    .padding(8)
-                }
-
-                GroupBox("颜色（按字符依次循环，使整个文字每个字可以不同颜色）") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            ColorPicker("添加颜色", selection: $newColor, supportsOpacity: false)
-                            Button("添加") {
-                                settings.colors.append(NSColor(newColor).hexString)
-                            }
-                            if settings.colors.count > 1 {
-                                Button("移除最后一个") {
-                                    settings.colors.removeLast()
-                                }
-                            }
-                        }
-                        HStack(spacing: 4) {
-                            ForEach(Array(settings.colors.enumerated()), id: \.offset) { idx, hex in
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(nsColor: NSColor(hex: hex) ?? .white))
-                                    .frame(width: 22, height: 22)
-                                    .overlay(Text("\(idx + 1)").font(.caption2))
-                            }
-                        }
-                        preview
                     }
                     .padding(8)
                 }
@@ -97,6 +70,67 @@ struct GeneralSettingsView: View {
             TextField(label, text: text)
                 .textFieldStyle(.roundedBorder)
         }
+    }
+}
+
+/// 颜色页：依次循环应用到每个字符，可单独修改、拖动排序、删除
+struct ColorsSettingsView: View {
+    @EnvironmentObject var settings: AppSettings
+    @State private var newColor = Color.white
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                ColorPicker("添加颜色", selection: $newColor, supportsOpacity: false)
+                Button("添加") {
+                    settings.colorEntries.append(ColorEntry(hex: NSColor(newColor).hexString))
+                }
+                Spacer()
+            }
+
+            List {
+                ForEach(settings.colorEntries) { entry in
+                    HStack {
+                        ColorPicker("", selection: colorBinding(entry.id), supportsOpacity: false)
+                            .labelsHidden()
+                        Spacer()
+                        Button {
+                            settings.colorEntries.removeAll { $0.id == entry.id }
+                        } label: {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundStyle(.red)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(settings.colorEntries.count <= 1)
+                    }
+                }
+                .onMove { offsets, destination in
+                    settings.colorEntries.move(fromOffsets: offsets, toOffset: destination)
+                }
+            }
+
+            Text("颜色依次循环应用到每个字符；拖动可排序")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            preview
+        }
+        .padding()
+    }
+
+    private func colorBinding(_ id: UUID) -> Binding<Color> {
+        Binding(
+            get: {
+                guard let i = settings.colorEntries.firstIndex(where: { $0.id == id }) else {
+                    return .white
+                }
+                return Color(nsColor: NSColor(hex: settings.colorEntries[i].hex) ?? .white)
+            },
+            set: { newValue in
+                guard let i = settings.colorEntries.firstIndex(where: { $0.id == id }) else { return }
+                settings.colorEntries[i].hex = NSColor(newValue).hexString
+            }
+        )
     }
 
     private var preview: some View {

@@ -1,6 +1,12 @@
 import Foundation
 import AppKit
 
+/// 一个颜色条目：稳定 id（用于 SwiftUI 列表身份）+ 颜色 hex
+struct ColorEntry: Identifiable, Codable, Equatable {
+    var id = UUID()
+    var hex: String
+}
+
 final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
@@ -25,9 +31,13 @@ final class AppSettings: ObservableObject {
     @Published var bold: Bool {
         didSet { UserDefaults.standard.set(bold, forKey: "bold") }
     }
-    /// 每个字符一个颜色（hex 数组），不足时循环使用
-    @Published var colors: [String] {
-        didSet { UserDefaults.standard.set(colors, forKey: "colors") }
+    /// 每个字符一个颜色，不足时循环使用
+    @Published var colorEntries: [ColorEntry] {
+        didSet {
+            if let data = try? JSONEncoder().encode(colorEntries) {
+                UserDefaults.standard.set(data, forKey: "colorEntries")
+            }
+        }
     }
     @Published var history: [String] {
         didSet { UserDefaults.standard.set(history, forKey: "history") }
@@ -42,7 +52,15 @@ final class AppSettings: ObservableObject {
         maxWidth = d.object(forKey: "maxWidth") as? Double ?? 200
         fontSize = d.object(forKey: "fontSize") as? Double ?? 13
         bold = d.object(forKey: "bold") as? Bool ?? true
-        colors = d.stringArray(forKey: "colors") ?? ["#FFFFFF"]
+        if let data = d.data(forKey: "colorEntries"),
+           let decoded = try? JSONDecoder().decode([ColorEntry].self, from: data),
+           !decoded.isEmpty {
+            colorEntries = decoded
+        } else {
+            // 兼容旧版本存的 [String]
+            let legacy = d.stringArray(forKey: "colors") ?? ["#FFFFFF"]
+            colorEntries = legacy.map { ColorEntry(hex: $0) }
+        }
         history = d.stringArray(forKey: "history") ?? []
     }
 
@@ -53,7 +71,7 @@ final class AppSettings: ObservableObject {
     }
 
     var nsColors: [NSColor] {
-        colors.compactMap { NSColor(hex: $0) }
+        colorEntries.compactMap { NSColor(hex: $0.hex) }
     }
 
     func pushHistory(_ value: String) {
