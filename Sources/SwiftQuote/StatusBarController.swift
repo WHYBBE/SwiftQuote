@@ -6,7 +6,7 @@ final class StatusBarController: NSObject, ObservableObject {
 
     private var statusItem: NSStatusItem!
     private var inputPanel: InputPanel?
-    private var settingsWindow: NSWindow?
+    private var settingsWindowController: SettingsWindowController?
     private let settings = AppSettings.shared
     private var perCharColors = false
 
@@ -85,7 +85,7 @@ final class StatusBarController: NSObject, ObservableObject {
         let header = NSMenuItem(title: "历史", action: nil, keyEquivalent: "")
         header.isEnabled = false
         menu.addItem(header)
-        for item in settings.history {
+        for item in settings.history.prefix(5) {
             let mi = NSMenuItem(title: item, action: #selector(onHistoryItem(_:)), keyEquivalent: "")
             mi.target = self
             mi.representedObject = item
@@ -131,18 +131,11 @@ final class StatusBarController: NSObject, ObservableObject {
 
     // MARK: - 设置窗口
     private func showSettings() {
-        if settingsWindow == nil {
-            let view = SettingsView()
-                .environmentObject(AppSettings.shared)
-            let hosting = NSHostingController(rootView: view)
-            let win = NSWindow(contentViewController: hosting)
-            win.title = "SwiftQuote 设置"
-            win.styleMask = [.titled, .closable]
-            win.setContentSize(NSSize(width: 420, height: 560))
-            settingsWindow = win
+        if settingsWindowController == nil {
+            settingsWindowController = SettingsWindowController()
         }
-        settingsWindow?.center()
-        settingsWindow?.makeKeyAndOrderFront(nil)
+        settingsWindowController?.showWindow(nil)
+        settingsWindowController?.window?.center()
         NSApp.activate(ignoringOtherApps: true)
     }
 }

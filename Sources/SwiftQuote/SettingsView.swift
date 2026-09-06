@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsView: View {
+struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @State private var newColor = Color.white
 
@@ -80,20 +80,14 @@ struct SettingsView: View {
                 }
 
                 GroupBox("历史") {
-                    VStack(alignment: .leading, spacing: 8) {
+                    HStack {
                         Toggle("跟踪历史", isOn: $settings.trackHistory)
-                        if !settings.history.isEmpty {
-                            Button("清除历史记录") {
-                                settings.history = []
-                            }
-                        }
                     }
                     .padding(8)
                 }
             }
             .padding()
         }
-        .frame(minWidth: 420, minHeight: 560)
     }
 
     private func labeledField(_ label: String, text: Binding<String>) -> some View {
@@ -121,6 +115,58 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView().environmentObject(AppSettings.shared)
+/// 历史记录页：查看、应用、删除单条、清空
+struct HistorySettingsView: View {
+    @EnvironmentObject var settings: AppSettings
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Toggle("跟踪历史", isOn: $settings.trackHistory)
+                Spacer()
+                if !settings.history.isEmpty {
+                    Button(role: .destructive) {
+                        settings.history = []
+                    } label: {
+                        Label("清空全部", systemImage: "trash")
+                    }
+                }
+            }
+
+            if settings.history.isEmpty {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Text("暂无历史记录")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                Spacer()
+            } else {
+                List {
+                    ForEach(settings.history, id: \.self) { item in
+                        HStack {
+                            Text(item)
+                                .lineLimit(1)
+                            Spacer()
+                            if item == settings.text {
+                                Text("当前")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Button("应用") {
+                                settings.text = item
+                            }
+                            .controlSize(.small)
+                        }
+                    }
+                    .onDelete { offsets in
+                        settings.history.remove(atOffsets: offsets)
+                    }
+                }
+                .listStyle(.inset)
+            }
+        }
+        .padding()
+    }
 }
