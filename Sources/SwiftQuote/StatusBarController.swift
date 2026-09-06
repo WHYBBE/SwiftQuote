@@ -148,5 +148,8 @@ final class StatusBarController: NSObject, ObservableObject {
         settingsWindowController?.showWindow(nil)
         settingsWindowController?.window?.center()
         NSApp.activate(ignoringOtherApps: true)
+        // orderFrontRegardless 保证窗口提到最前（普通 accessory 应用 showWindow 可能落在其他窗口下）
+        settingsWindowController?.window?.makeKeyAndOrderFront(nil)
+        settingsWindowController?.window?.orderFrontRegardless()
     }
 }
