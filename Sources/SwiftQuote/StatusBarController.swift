@@ -157,6 +157,14 @@ final class StatusBarController: NSObject, ObservableObject {
     }
 
     // MARK: - 设置窗口
+    func settingsWindowDidClose() {
+        settingsWindowController = nil   // 释放窗口与视图树
+    }
+
+    func aboutWindowDidClose() {
+        aboutWindowController = nil
+    }
+
     private func showSettings() {
         if settingsWindowController == nil {
             settingsWindowController = SettingsWindowController()

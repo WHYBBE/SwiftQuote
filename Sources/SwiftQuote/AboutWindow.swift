@@ -18,7 +18,10 @@ final class AboutWindowController: NSWindowController, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
-        // 关闭后由 StatusBarController 重新创建
+        // 关闭后释放控制器与视图树（异步避免在 delegate 回调中自释放）
+        DispatchQueue.main.async {
+            StatusBarController.shared.aboutWindowDidClose()
+        }
     }
 }
 
@@ -58,8 +61,7 @@ struct AboutView: View {
     @ViewBuilder
     private var appIcon: some View {
         // 打包 App：从 asset catalog 读取；SPM 裸跑：用占位图标
-        if let icon = NSImage(named: "AppIcon") ?? NSApp.applicationIconImage,
-           icon.size.width > 1 {
+        if let icon = NSImage(named: "AppIcon"), icon.isValid, icon.size.width > 1 {
             Image(nsImage: icon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
