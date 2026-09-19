@@ -8,14 +8,17 @@ A lightweight macOS menu bar app that displays custom text in the menu bar — s
 
 - **Custom text in the menu bar** — left-click for the menu, right-click to edit instantly
 - **Rich styling** — prefix/suffix, font size, bold, per-character colors (multiple colors cycle through characters), max width limit
-- **Color presets** — one-click palettes (Classic, Rainbow, Ocean, Sunset, Forest, Candy)
+- **Adaptive colors** — maintain separate palettes for light/dark menu bars; colors switch automatically as the menu bar appearance changes (with a reset-to-default button)
+- **Text presets** — one-click templates like "Aloha!", "Do not disturb", "Coffee"
 - **History** — keeps the last 10 entries, quick-apply from the menu or settings
 - **Appearance** — System / Light / Dark mode
 - **Localization** — System / 中文 / English UI
+- **Launch at login** — built with SMAppService (requires running as a bundled app)
+- **Lightweight** — ~13 MB baseline memory; windows release their view trees on close, and a built-in **Restart** menu item reclaims memory from long sessions
 
 ## Requirements
 
-- macOS 14+
+- macOS 13+
 - Swift 5.9+ / Xcode 15+ (for building)
 
 ## Build & Run
@@ -32,8 +35,8 @@ Or open `SwiftQuote.xcodeproj` in Xcode and run (the project is generated from `
 ## Usage
 
 - **Right-click** the menu bar text to edit it in place (`⏎` to apply, `Esc` to cancel)
-- **Left-click** for the menu: edit text, open settings, apply history, or quit
-- Settings has four tabs: **General** (theme & language), **Text**, **Colors**, **History**
+- **Left-click** for the menu: Input…, Settings…, track history toggle, launch-at-login toggle, recent history (up to 5), About (with version), Restart, Quit
+- Settings has four tabs: **General** (theme, language & startup), **Text** (prefix/suffix, font, presets), **Colors** (per-character colors, adaptive menu bar palettes), **History**
 
 ## License
 
