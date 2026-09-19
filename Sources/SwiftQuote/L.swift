@@ -50,6 +50,7 @@ struct L {
     var launchAtLogin: String { t("开机自启", "Launch at Login") }
     var launchAtLoginUnavailable: String { t("需以打包的 App 形式运行才可用", "Requires running as a bundled app") }
     var menuAbout: String     { t("关于", "About") }
+    var menuRestart: String   { t("重启", "Restart") }
     var aboutTitle: String    { t("关于 SwiftQuote", "About SwiftQuote") }
     var aboutDescription: String { t("轻量级 macOS 菜单栏自定义文字应用", "A lightweight macOS menu bar custom text app") }
     func aboutVersion(_ v: String, _ b: String) -> String {

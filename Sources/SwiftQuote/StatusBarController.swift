@@ -105,6 +105,10 @@ final class StatusBarController: NSObject, ObservableObject {
         about.target = self
         menu.addItem(about)
 
+        let restart = NSMenuItem(title: s.menuRestart, action: #selector(onRestart), keyEquivalent: "")
+        restart.target = self
+        menu.addItem(restart)
+
         let quit = NSMenuItem(title: s.menuQuit, action: #selector(onQuit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
@@ -167,6 +171,20 @@ final class StatusBarController: NSObject, ObservableObject {
 
     @objc private func onQuit() {
         NSApp.terminate(nil)
+    }
+
+    /// 重启应用：先拉起新进程，再退出当前实例（缓解长期运行/开窗后的内存残留）
+    @objc private func onRestart() {
+        let url = Bundle.main.executableURL
+            ?? URL(fileURLWithPath: CommandLine.arguments[0])
+        let proc = Process()
+        proc.executableURL = url
+        proc.standardOutput = nil
+        proc.standardError = nil
+        try? proc.run()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            NSApp.terminate(nil)
+        }
     }
 
     // MARK: - 输入面板
