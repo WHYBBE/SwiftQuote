@@ -76,12 +76,10 @@ final class StatusBarController: NSObject, ObservableObject {
         let s = settings.strings
         let input = NSMenuItem(title: s.menuInput, action: #selector(onInput), keyEquivalent: "")
         input.target = self
-        input.image = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)
         menu.addItem(input)
 
-        let settingsItem = NSMenuItem(title: s.menuSettings, action: #selector(onSettings), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: s.menuSettings, action: #selector(onSettings), keyEquivalent: "")
         settingsItem.target = self
-        settingsItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)
         menu.addItem(settingsItem)
 
         let historyToggle = NSMenuItem(title: s.trackHistory, action: #selector(onToggleHistory), keyEquivalent: "")
@@ -101,7 +99,14 @@ final class StatusBarController: NSObject, ObservableObject {
         }
 
         menu.addItem(.separator())
-        let about = NSMenuItem(title: s.menuAbout, action: #selector(onAbout), keyEquivalent: "")
+        // 关于（打包 App 时附上版本号）
+        let aboutTitle: String
+        if let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            aboutTitle = "\(s.menuAbout) \(v)"
+        } else {
+            aboutTitle = s.menuAbout
+        }
+        let about = NSMenuItem(title: aboutTitle, action: #selector(onAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
 
@@ -109,7 +114,7 @@ final class StatusBarController: NSObject, ObservableObject {
         restart.target = self
         menu.addItem(restart)
 
-        let quit = NSMenuItem(title: s.menuQuit, action: #selector(onQuit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: s.menuQuit, action: #selector(onQuit), keyEquivalent: "")
         quit.target = self
         menu.addItem(quit)
 
