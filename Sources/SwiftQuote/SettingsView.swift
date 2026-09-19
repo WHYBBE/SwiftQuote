@@ -125,7 +125,13 @@ struct ColorsSettingsView: View {
     var body: some View {
         let s = settings.strings
         VStack(alignment: .leading, spacing: 12) {
-            Toggle(s.adaptiveColors, isOn: $settings.adaptiveColors)
+            HStack {
+                Toggle(s.adaptiveColors, isOn: $settings.adaptiveColors)
+                Spacer()
+                Button(s.resetColors) {
+                    settings.resetColorsToDefault()
+                }
+            }
 
             if settings.adaptiveColors {
                 colorList(title: s.lightBarColors,

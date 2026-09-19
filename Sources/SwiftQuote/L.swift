@@ -65,6 +65,7 @@ struct L {
     var adaptiveColors: String { t("自适应菜单栏（浅色/深色两套颜色）", "Adapt to menu bar (light/dark palettes)") }
     var lightBarColors: String { t("浅色菜单栏（用深色文字）", "Light Menu Bar (dark text)") }
     var darkBarColors: String  { t("深色菜单栏（用浅色文字）", "Dark Menu Bar (light text)") }
+    var resetColors: String { t("恢复默认", "Reset to Default") }
     var colorsHint: String {
         t("颜色依次循环应用到每个字符；拖动可排序", "Colors cycle through characters; drag to reorder")
     }

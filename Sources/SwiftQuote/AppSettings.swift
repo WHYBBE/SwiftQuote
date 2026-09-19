@@ -182,6 +182,16 @@ final class AppSettings: ObservableObject {
         effectiveColorEntries.compactMap { NSColor(hex: $0.hex) }
     }
 
+    /// 恢复默认颜色（当前模式下正在编辑的那套/两套）
+    func resetColorsToDefault() {
+        if adaptiveColors {
+            lightBarColorEntries = [ColorEntry(hex: "#000000")]
+            darkBarColorEntries = [ColorEntry(hex: "#FFFFFF")]
+        } else {
+            colorEntries = [ColorEntry(hex: "#FFFFFF")]
+        }
+    }
+
     func pushHistory(_ value: String) {
         guard trackHistory, !value.isEmpty else { return }
         history.removeAll { $0 == value }
