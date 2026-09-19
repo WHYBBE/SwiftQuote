@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Combine
 
 final class StatusBarController: NSObject, ObservableObject {
     static let shared = StatusBarController()
@@ -9,6 +10,8 @@ final class StatusBarController: NSObject, ObservableObject {
     private var settingsWindowController: SettingsWindowController?
     private var aboutWindowController: AboutWindowController?
     private let settings = AppSettings.shared
+    private var appearanceObservation: NSKeyValueObservation?
+    private var cancellables = Set<AnyCancellable>()
 
     func setup() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -16,17 +19,35 @@ final class StatusBarController: NSObject, ObservableObject {
         button.action = #selector(onClick(_:))
         button.target = self
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        refreshTitle()
 
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(refreshTitle),
-            name: UserDefaults.didChangeNotification, object: nil)
+        // 监听菜单栏深浅变化（壁纸/系统外观改变时系统会自动调整菜单栏外观）
+        settings.menuBarIsDark = Self.isDarkAppearance(button.effectiveAppearance)
+        appearanceObservation = button.observe(\.effectiveAppearance, options: [.new]) { [weak self] button, _ in
+            guard let self else { return }
+            let dark = Self.isDarkAppearance(button.effectiveAppearance)
+            if dark != self.settings.menuBarIsDark {
+                self.settings.menuBarIsDark = dark
+                if self.settings.adaptiveColors { self.refreshTitle() }
+            }
+        }
+
+        // 设置变化时刷新菜单栏（直接回调，比 Combine/UserDefaults 通知可靠）
+        settings.onDisplayChange = { [weak self] in self?.refreshTitle() }
+
+        refreshTitle()
+    }
+
+    private static func isDarkAppearance(_ appearance: NSAppearance) -> Bool {
+        // 菜单栏实际外观是 VibrantLight/VibrantDark，不是 Aqua/DarkAqua
+        appearance.name == .vibrantDark || appearance.bestMatch(from: [.vibrantDark, .aqua]) == .vibrantDark
     }
 
     @objc private func refreshTitle() {
         guard let button = statusItem?.button else { return }
+        // 刷新前同步菜单栏当前深浅状态（开关切换时确保用对颜色）
+        settings.menuBarIsDark = Self.isDarkAppearance(button.effectiveAppearance)
         let str = NSMutableAttributedString()
-        let colors = settings.nsColors
+        let colors = settings.effectiveNSColors
         let full = settings.displayText
         for (i, ch) in full.enumerated() {
             let color = colors.isEmpty ? .white : colors[i % colors.count]

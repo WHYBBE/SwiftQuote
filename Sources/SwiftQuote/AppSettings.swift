@@ -12,25 +12,25 @@ final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
     @Published var text: String {
-        didSet { UserDefaults.standard.set(text, forKey: "text") }
+        didSet { UserDefaults.standard.set(text, forKey: "text"); onDisplayChange?() }
     }
     @Published var prefix: String {
-        didSet { UserDefaults.standard.set(prefix, forKey: "prefix") }
+        didSet { UserDefaults.standard.set(prefix, forKey: "prefix"); onDisplayChange?() }
     }
     @Published var suffix: String {
-        didSet { UserDefaults.standard.set(suffix, forKey: "suffix") }
+        didSet { UserDefaults.standard.set(suffix, forKey: "suffix"); onDisplayChange?() }
     }
     @Published var trackHistory: Bool {
         didSet { UserDefaults.standard.set(trackHistory, forKey: "trackHistory") }
     }
     @Published var maxWidth: Double {
-        didSet { UserDefaults.standard.set(maxWidth, forKey: "maxWidth") }
+        didSet { UserDefaults.standard.set(maxWidth, forKey: "maxWidth"); onDisplayChange?() }
     }
     @Published var fontSize: Double {
-        didSet { UserDefaults.standard.set(fontSize, forKey: "fontSize") }
+        didSet { UserDefaults.standard.set(fontSize, forKey: "fontSize"); onDisplayChange?() }
     }
     @Published var bold: Bool {
-        didSet { UserDefaults.standard.set(bold, forKey: "bold") }
+        didSet { UserDefaults.standard.set(bold, forKey: "bold"); onDisplayChange?() }
     }
     /// 每个字符一个颜色，不足时循环使用
     @Published var colorEntries: [ColorEntry] {
@@ -38,6 +38,29 @@ final class AppSettings: ObservableObject {
             if let data = try? JSONEncoder().encode(colorEntries) {
                 UserDefaults.standard.set(data, forKey: "colorEntries")
             }
+            onDisplayChange?()
+        }
+    }
+    /// 自适应菜单栏：开启后按菜单栏深浅自动切换两套颜色
+    @Published var adaptiveColors: Bool {
+        didSet { UserDefaults.standard.set(adaptiveColors, forKey: "adaptiveColors"); onDisplayChange?() }
+    }
+    /// 浅色菜单栏（深色壁纸）下使用的颜色
+    @Published var lightBarColorEntries: [ColorEntry] {
+        didSet {
+            if let data = try? JSONEncoder().encode(lightBarColorEntries) {
+                UserDefaults.standard.set(data, forKey: "lightBarColorEntries")
+            }
+            onDisplayChange?()
+        }
+    }
+    /// 深色菜单栏（浅色壁纸）下使用的颜色
+    @Published var darkBarColorEntries: [ColorEntry] {
+        didSet {
+            if let data = try? JSONEncoder().encode(darkBarColorEntries) {
+                UserDefaults.standard.set(data, forKey: "darkBarColorEntries")
+            }
+            onDisplayChange?()
         }
     }
     @Published var history: [String] {
@@ -72,6 +95,15 @@ final class AppSettings: ObservableObject {
             colorEntries = legacy.map { ColorEntry(hex: $0) }
         }
         history = d.stringArray(forKey: "history") ?? []
+        adaptiveColors = d.object(forKey: "adaptiveColors") as? Bool ?? false
+        func loadEntries(_ key: String, fallback: [ColorEntry]) -> [ColorEntry] {
+            guard let data = d.data(forKey: key),
+                  let decoded = try? JSONDecoder().decode([ColorEntry].self, from: data),
+                  !decoded.isEmpty else { return fallback }
+            return decoded
+        }
+        lightBarColorEntries = loadEntries("lightBarColorEntries", fallback: [ColorEntry(hex: "#000000")])
+        darkBarColorEntries = loadEntries("darkBarColorEntries", fallback: [ColorEntry(hex: "#FFFFFF")])
         appearance = AppAppearance(rawValue: d.string(forKey: "appearance") ?? "") ?? .system
         language = AppLanguage(rawValue: d.string(forKey: "appLanguage") ?? "") ?? .system
     }
@@ -132,6 +164,22 @@ final class AppSettings: ObservableObject {
 
     var nsColors: [NSColor] {
         colorEntries.compactMap { NSColor(hex: $0.hex) }
+    }
+
+    /// 菜单栏当前是否为深色（浅色壁纸下系统会把菜单栏压暗）
+    var menuBarIsDark = false
+
+    /// 显示内容变化时的回调（由 StatusBarController 设置）
+    var onDisplayChange: (() -> Void)?
+
+    /// 当前实际生效的颜色（自适应开启时按菜单栏深浅选一套）
+    var effectiveColorEntries: [ColorEntry] {
+        guard adaptiveColors else { return colorEntries }
+        return menuBarIsDark ? darkBarColorEntries : lightBarColorEntries
+    }
+
+    var effectiveNSColors: [NSColor] {
+        effectiveColorEntries.compactMap { NSColor(hex: $0.hex) }
     }
 
     func pushHistory(_ value: String) {

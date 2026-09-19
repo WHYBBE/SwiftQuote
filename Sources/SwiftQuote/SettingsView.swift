@@ -118,43 +118,25 @@ struct TextSettingsView: View {
 }
 
 /// 颜色页：依次循环应用到每个字符，可单独修改、拖动排序、删除
+/// 开启「自适应菜单栏」后维护两套颜色，随菜单栏深浅自动切换
 struct ColorsSettingsView: View {
     @EnvironmentObject var settings: AppSettings
-    @State private var newColor = Color.white
 
     var body: some View {
         let s = settings.strings
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                ColorPicker(s.addColor, selection: $newColor, supportsOpacity: false)
-                Button(s.add) {
-                    settings.colorEntries.append(ColorEntry(hex: NSColor(newColor).hexString))
-                }
-                Spacer()
+            Toggle(s.adaptiveColors, isOn: $settings.adaptiveColors)
+
+            if settings.adaptiveColors {
+                colorList(title: s.lightBarColors,
+                          entries: $settings.lightBarColorEntries)
+                colorList(title: s.darkBarColors,
+                          entries: $settings.darkBarColorEntries)
+            } else {
+                colorList(title: nil, entries: $settings.colorEntries)
             }
 
-            List {
-                ForEach(settings.colorEntries) { entry in
-                    HStack {
-                        ColorPicker("", selection: colorBinding(entry.id), supportsOpacity: false)
-                            .labelsHidden()
-                        Spacer()
-                        Button {
-                            settings.colorEntries.removeAll { $0.id == entry.id }
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundStyle(.red)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(settings.colorEntries.count <= 1)
-                    }
-                }
-                .onMove { offsets, destination in
-                    settings.colorEntries.move(fromOffsets: offsets, toOffset: destination)
-                }
-            }
-
-            Text(settings.strings.colorsHint)
+            Text(s.colorsHint)
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -163,24 +145,20 @@ struct ColorsSettingsView: View {
         .padding()
     }
 
-    private func colorBinding(_ id: UUID) -> Binding<Color> {
-        Binding(
-            get: {
-                guard let i = settings.colorEntries.firstIndex(where: { $0.id == id }) else {
-                    return .white
-                }
-                return Color(nsColor: NSColor(hex: settings.colorEntries[i].hex) ?? .white)
-            },
-            set: { newValue in
-                guard let i = settings.colorEntries.firstIndex(where: { $0.id == id }) else { return }
-                settings.colorEntries[i].hex = NSColor(newValue).hexString
+    /// 一组颜色的编辑列表（添加 / 修改 / 排序 / 删除）
+    private func colorList(title: String?, entries: Binding<[ColorEntry]>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let title {
+                Text(title)
+                    .font(.headline)
             }
-        )
+            ColorListEditor(entries: entries)
+        }
     }
 
     private var preview: some View {
         HStack(spacing: 0) {
-            let colors = settings.nsColors
+            let colors = settings.effectiveNSColors
             let full = settings.displayText
             ForEach(Array(full.enumerated()), id: \.offset) { i, ch in
                 Text(String(ch))
@@ -191,6 +169,58 @@ struct ColorsSettingsView: View {
         .padding(.horizontal, 8)
         .frame(height: 28)
         .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+    }
+}
+
+/// 可复用的颜色列表编辑器：添加 / 修改 / 拖动排序 / 删除
+private struct ColorListEditor: View {
+    @Binding var entries: [ColorEntry]
+    @State private var newColor = Color.white
+
+    var body: some View {
+        HStack {
+            ColorPicker("", selection: $newColor, supportsOpacity: false)
+                .labelsHidden()
+            Button(AppSettings.shared.strings.add) {
+                entries.append(ColorEntry(hex: NSColor(newColor).hexString))
+            }
+            Spacer()
+        }
+
+        List {
+            ForEach(entries) { entry in
+                HStack {
+                    ColorPicker("", selection: colorBinding(entry.id), supportsOpacity: false)
+                        .labelsHidden()
+                    Spacer()
+                    Button {
+                        entries.removeAll { $0.id == entry.id }
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(entries.count <= 1)
+                }
+            }
+            .onMove { offsets, destination in
+                entries.move(fromOffsets: offsets, toOffset: destination)
+            }
+        }
+        .frame(minHeight: 120)
+    }
+
+    private func colorBinding(_ id: UUID) -> Binding<Color> {
+        Binding(
+            get: {
+                guard let i = entries.firstIndex(where: { $0.id == id }) else { return .white }
+                return Color(nsColor: NSColor(hex: entries[i].hex) ?? .white)
+            },
+            set: { newValue in
+                guard let i = entries.firstIndex(where: { $0.id == id }) else { return }
+                entries[i].hex = NSColor(newValue).hexString
+            }
+        )
     }
 }
 

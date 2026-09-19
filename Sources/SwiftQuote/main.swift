@@ -1,13 +1,10 @@
-import SwiftUI
+import AppKit
 
-@main
-struct SwiftQuoteApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    var body: some Scene {
-        Settings { EmptyView() }
-    }
-}
+// 纯菜单栏应用：不走 SwiftUI App 生命周期（其 Settings scene 会创建一个空白窗口）
+let app = NSApplication.shared
+let delegate = AppDelegate()
+app.delegate = delegate
+app.run()
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
