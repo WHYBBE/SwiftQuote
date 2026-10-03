@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 /// 关于窗口（仿系统关于页：图标 / 名称 / 版本 / 简介 / 许可 / 仓库链接）
+@MainActor
 final class AboutWindowController: NSWindowController, NSWindowDelegate {
 
     convenience init() {

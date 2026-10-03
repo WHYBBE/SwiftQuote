@@ -3,6 +3,7 @@ import SwiftUI
 import Combine
 
 /// 系统偏好设置风格窗口：NSTabViewController 的 toolbar 模式（液态玻璃工具栏）
+@MainActor
 final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     private var items: [NSTabViewItem] = []

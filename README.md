@@ -4,6 +4,13 @@
 
 <h1 align="center">SwiftQuote</h1>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-15%2B-blue" alt="macOS 15+">
+  <img src="https://img.shields.io/badge/Swift-6.0%2B-orange" alt="Swift 6.0+">
+  <img src="https://img.shields.io/badge/UI-AppKit-8A2BE2" alt="AppKit">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
+</p>
+
 <p align="center"><a href="README.zh-CN.md">中文</a></p>
 
 <p align="center">A lightweight macOS menu bar app that displays custom text in the menu bar — slogans, reminders, or anything you like.</p>
@@ -38,8 +45,8 @@
 
 ## Requirements
 
-- macOS 13+
-- Swift 5.9+ / Xcode 15+ (for building)
+- macOS 15+
+- Swift 6.0+ / Xcode 16+ (for building)
 
 ## Build & Run
 

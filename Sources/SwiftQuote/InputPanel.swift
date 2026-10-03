@@ -2,6 +2,7 @@ import AppKit
 
 /// 无边框输入面板：失去焦点自动隐藏（不提交），回车提交，Esc 取消。
 /// 输入框下方显示历史记录（不含当前值），每行可点击应用或单独删除。
+@MainActor
 final class InputPanel: NSPanel, NSTextFieldDelegate {
     // 用 NoAutofillTextField 替代 NSTextField，关闭系统 AutoFill 建议（详见该文件注释）
     private let textField = NoAutofillTextField()
@@ -16,7 +17,7 @@ final class InputPanel: NSPanel, NSTextFieldDelegate {
     private var dismissID = 0
 
     /// 面板显示期间的鼠标监视器：点击面板外即关闭。
-    private var mouseMonitors: [Any] = []
+    nonisolated(unsafe) private var mouseMonitors: [Any] = []
 
     /// 面板顶部（贴近菜单栏）的位置，用于增减高度时保持顶端不动。
     private var anchorTopY: CGFloat = 0
@@ -261,7 +262,7 @@ final class InputPanel: NSPanel, NSTextFieldDelegate {
         }
     }
 
-    private func stopMouseMonitors() {
+    nonisolated private func stopMouseMonitors() {
         for monitor in mouseMonitors { NSEvent.removeMonitor(monitor) }
         mouseMonitors.removeAll()
     }

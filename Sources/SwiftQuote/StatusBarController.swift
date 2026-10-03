@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 import Combine
 
+@MainActor
 final class StatusBarController: NSObject, ObservableObject {
     static let shared = StatusBarController()
 
@@ -23,11 +24,14 @@ final class StatusBarController: NSObject, ObservableObject {
         // 监听菜单栏深浅变化（壁纸/系统外观改变时系统会自动调整菜单栏外观）
         settings.menuBarIsDark = Self.isDarkAppearance(button.effectiveAppearance)
         appearanceObservation = button.observe(\.effectiveAppearance, options: [.new]) { [weak self] button, _ in
-            guard let self else { return }
-            let dark = Self.isDarkAppearance(button.effectiveAppearance)
-            if dark != self.settings.menuBarIsDark {
-                self.settings.menuBarIsDark = dark
-                if self.settings.adaptiveColors { self.refreshTitle() }
+            // KVO 回调在主线程触发；Swift 6 下需显式声明主actor隔离
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                let dark = Self.isDarkAppearance(button.effectiveAppearance)
+                if dark != self.settings.menuBarIsDark {
+                    self.settings.menuBarIsDark = dark
+                    if self.settings.adaptiveColors { self.refreshTitle() }
+                }
             }
         }
 

@@ -8,6 +8,7 @@ struct ColorEntry: Identifiable, Codable, Equatable {
     var hex: String
 }
 
+@MainActor
 final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 

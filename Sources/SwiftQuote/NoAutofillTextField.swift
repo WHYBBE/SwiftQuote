@@ -31,6 +31,7 @@ import AppKit
 ///   （声明成验证码字段，密码管理器通常会跳过），或参考 StackOverflow 65907104
 ///   里的「隐藏假 NSSecureTextField」方案。
 /// - Apple 未保证该 selector 永远存在；若未来系统改名，此方法会静默失效（不会崩溃）。
+@MainActor
 final class NoAutofillTextField: NSTextField {
 
     /// 私有 selector：AppKit 用它决定是否为该字段提供密码 AutoFill 建议。
