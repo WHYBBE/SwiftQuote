@@ -49,8 +49,8 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         window.title = s.tabGeneral
         window.contentViewController = tabController
         window.center()
-        // 关闭后释放整个窗口与视图树，回收内存
-        window.isReleasedWhenClosed = true
+        // 注：ARC 下不要设 isReleasedWhenClosed（官方标注仅对非 ARC 有用，易双重释放）。
+        // 窗口在关闭时由 settingsWindowDidClose() 置空控制器后交给 ARC 释放。
 
         super.init(window: window)
         window.delegate = self

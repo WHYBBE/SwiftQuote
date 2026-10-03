@@ -195,7 +195,10 @@ final class StatusBarController: NSObject, ObservableObject {
     // MARK: - 输入面板
     private func showInputPanel() {
         if inputPanel == nil {
-            inputPanel = InputPanel()
+            let panel = InputPanel()
+            // 关闭后释放面板（连同 NSTextField），回收视图树、保持轻量。
+            panel.onDismiss = { [weak self] in self?.inputPanel = nil }
+            inputPanel = panel
         }
         inputPanel?.show(near: statusItem.button)
     }
