@@ -214,7 +214,8 @@ final class InputPanel: NSPanel, NSTextFieldDelegate {
     }
 
     @objc private func onResignKey() {
-        textField.abortEditing()
+        // 不调用 abortEditing()：它会在主线程同步等待输入法/字段编辑器（Default QoS），
+        // 触发 "priority inversion" 运行时警告。面板随后即隐藏并释放，未提交的编辑自然丢弃。
         dismiss()
     }
 
