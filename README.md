@@ -1,8 +1,28 @@
-# SwiftQuote
+<p align="center">
+  <img src="docs/logo.png" width="112" alt="SwiftQuote logo">
+</p>
 
-[中文](README.zh-CN.md)
+<h1 align="center">SwiftQuote</h1>
 
-A lightweight macOS menu bar app that displays custom text in the menu bar — slogans, reminders, or anything you like.
+<p align="center"><a href="README.zh-CN.md">中文</a></p>
+
+<p align="center">A lightweight macOS menu bar app that displays custom text in the menu bar — slogans, reminders, or anything you like.</p>
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/preview-main.png" width="220" alt="Custom text in the menu bar">
+</p>
+
+<p align="center">
+  <img src="docs/preview-left.png" width="210" alt="Left-click menu">
+  &nbsp;&nbsp;
+  <img src="docs/preview-right.png" width="400" alt="Right-click edit panel">
+</p>
+
+<p align="center">
+  <img src="docs/preview-setting.png" width="420" alt="Settings window">
+</p>
 
 ## Features
 
@@ -10,7 +30,7 @@ A lightweight macOS menu bar app that displays custom text in the menu bar — s
 - **Rich styling** — prefix/suffix, font size, bold, per-character colors (multiple colors cycle through characters), max width limit
 - **Adaptive colors** — maintain separate palettes for light/dark menu bars; colors switch automatically as the menu bar appearance changes (with a reset-to-default button)
 - **Text presets** — one-click templates like "Aloha!", "Do not disturb", "Coffee"
-- **History** — keeps the last 10 entries, quick-apply from the menu or settings
+- **History** — keeps the last 10 entries, quick-apply from the menu or settings; the current text is kept out of the list and each entry can be deleted individually
 - **Appearance** — System / Light / Dark mode
 - **Localization** — System / 中文 / English UI
 - **Launch at login** — built with SMAppService (requires running as a bundled app)
@@ -34,9 +54,9 @@ Or open `SwiftQuote.xcodeproj` in Xcode and run (the project is generated from `
 
 ## Usage
 
-- **Right-click** the menu bar text to edit it in place (`⏎` to apply, `Esc` to cancel)
+- **Right-click** the menu bar text to edit it in place (`⏎` to apply, `Esc` to cancel); recent history is shown below the field — click an entry to apply it, or use the × button to delete it
 - **Left-click** for the menu: Input…, Settings…, track history toggle, launch-at-login toggle, recent history (up to 5), About (with version), Restart, Quit
-- Settings has four tabs: **General** (theme, language & startup), **Text** (prefix/suffix, font, presets), **Colors** (per-character colors, adaptive menu bar palettes), **History**
+- Settings has four tabs: **General** (theme, language & startup), **Text** (content, prefix/suffix, font, presets), **Colors** (per-character colors, adaptive menu bar palettes), **History** (current text shown separately; delete entries individually)
 
 ## License
 
