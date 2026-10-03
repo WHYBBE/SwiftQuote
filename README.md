@@ -1,3 +1,5 @@
+> Vibe-coded with DeepSeek V4.1 Flash / OpenCode
+
 <p align="center">
   <img src="docs/logo.png" width="112" alt="SwiftQuote logo">
 </p>
