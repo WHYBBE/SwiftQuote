@@ -76,4 +76,5 @@ struct L {
     var clearAll: String  { t("清空全部", "Clear All") }
     var noHistory: String { t("暂无历史记录", "No history yet") }
     var current: String   { t("当前", "Current") }
+    var deleteHistoryItem: String { t("删除该记录", "Delete") }
 }

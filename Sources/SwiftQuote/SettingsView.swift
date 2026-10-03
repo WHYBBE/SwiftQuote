@@ -52,10 +52,10 @@ struct TextSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 GroupBox(s.groupText) {
                     VStack(alignment: .leading, spacing: 8) {
-                        labeledField(s.content, text: $settings.text) {
-                            // 直接编辑正文后回车，记入历史
-                            settings.pushHistory(settings.text)
-                        }
+                        // 实时编辑：更新菜单栏但不逐字写历史（切换时才把旧值记入历史）
+                        labeledField(s.content, text: Binding(
+                            get: { settings.text },
+                            set: { settings.setTextLive($0) }))
                         labeledField(s.prefix, text: $settings.prefix)
                         labeledField(s.suffix, text: $settings.suffix)
                         Toggle(s.bold, isOn: $settings.bold)
@@ -90,7 +90,6 @@ struct TextSettingsView: View {
                                     settings.suffix = preset.suffix
                                     if !preset.text.isEmpty {
                                         settings.text = preset.text
-                                        settings.pushHistory(preset.text)
                                     }
                                 }
                                 .controlSize(.small)
@@ -242,6 +241,7 @@ struct HistorySettingsView: View {
 
     var body: some View {
         let s = settings.strings
+        let items = settings.displayHistory   // 历史列表不含当前值
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Toggle(s.trackHistory, isOn: $settings.trackHistory)
@@ -255,7 +255,19 @@ struct HistorySettingsView: View {
                 }
             }
 
-            if settings.history.isEmpty {
+            // 当前值单独显示（不混在历史列表里）
+            if !settings.text.isEmpty {
+                GroupBox(s.current) {
+                    HStack {
+                        Text(settings.text)
+                            .lineLimit(1)
+                        Spacer()
+                    }
+                    .padding(6)
+                }
+            }
+
+            if items.isEmpty {
                 Spacer()
                 HStack {
                     Spacer()
@@ -266,24 +278,27 @@ struct HistorySettingsView: View {
                 Spacer()
             } else {
                 List {
-                    ForEach(settings.history, id: \.self) { item in
+                    ForEach(items, id: \.self) { item in
                         HStack {
                             Text(item)
                                 .lineLimit(1)
                             Spacer()
-                            if item == settings.text {
-                                Text(s.current)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
                             Button(s.apply) {
-                                settings.text = item
+                                settings.text = item   // 切换：旧值进入历史，该值移出历史
                             }
                             .controlSize(.small)
+                            Button {
+                                settings.removeHistory(item)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(.secondary)
+                            .help(s.deleteHistoryItem)
                         }
                     }
                     .onDelete { offsets in
-                        settings.history.remove(atOffsets: offsets)
+                        for index in offsets { settings.removeHistory(items[index]) }
                     }
                 }
                 .listStyle(.inset)

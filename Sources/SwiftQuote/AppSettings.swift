@@ -12,7 +12,19 @@ final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
     @Published var text: String {
-        didSet { UserDefaults.standard.set(text, forKey: "text"); onDisplayChange?() }
+        didSet {
+            UserDefaults.standard.set(text, forKey: "text")
+            if !suppressHistory {
+                // 当前值不留在历史里；被替换掉的旧值进入历史（“切换”语义）
+                history.removeAll { $0 == text }
+                if trackHistory, !oldValue.isEmpty, oldValue != text {
+                    history.removeAll { $0 == oldValue }
+                    history.insert(oldValue, at: 0)
+                    if history.count > 10 { history = Array(history.prefix(10)) }
+                }
+            }
+            onDisplayChange?()
+        }
     }
     @Published var prefix: String {
         didSet { UserDefaults.standard.set(prefix, forKey: "prefix"); onDisplayChange?() }
@@ -76,9 +88,28 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(language.rawValue, forKey: "appLanguage") }
     }
 
+    /// 设置页输入框实时编辑时置位：更新当前文字但不写历史，避免逐字污染历史。
+    private var suppressHistory = false
+
+    /// 实时编辑当前文字（不记入历史）。用于设置页输入框逐字输入。
+    func setTextLive(_ value: String) {
+        suppressHistory = true
+        text = value
+        suppressHistory = false
+    }
+
+    /// 用于展示的历史列表：始终排除当前值。
+    var displayHistory: [String] { history.filter { $0 != text } }
+
+    /// 删除某一条历史。
+    func removeHistory(_ value: String) {
+        history.removeAll { $0 == value }
+    }
+
     private init() {
         let d = UserDefaults.standard
-        text = d.string(forKey: "text") ?? "Aloha!"
+        let currentText = d.string(forKey: "text") ?? "Aloha!"
+        text = currentText
         prefix = d.string(forKey: "prefix") ?? "["
         suffix = d.string(forKey: "suffix") ?? "]"
         trackHistory = d.object(forKey: "trackHistory") as? Bool ?? true
@@ -94,7 +125,7 @@ final class AppSettings: ObservableObject {
             let legacy = d.stringArray(forKey: "colors") ?? ["#FFFFFF"]
             colorEntries = legacy.map { ColorEntry(hex: $0) }
         }
-        history = d.stringArray(forKey: "history") ?? []
+        history = (d.stringArray(forKey: "history") ?? []).filter { $0 != currentText }   // 当前值不进历史列表
         adaptiveColors = d.object(forKey: "adaptiveColors") as? Bool ?? false
         func loadEntries(_ key: String, fallback: [ColorEntry]) -> [ColorEntry] {
             guard let data = d.data(forKey: key),
@@ -190,13 +221,6 @@ final class AppSettings: ObservableObject {
         } else {
             colorEntries = [ColorEntry(hex: "#FFFFFF")]
         }
-    }
-
-    func pushHistory(_ value: String) {
-        guard trackHistory, !value.isEmpty else { return }
-        history.removeAll { $0 == value }
-        history.insert(value, at: 0)
-        if history.count > 10 { history = Array(history.prefix(10)) }
     }
 }
 
