@@ -35,6 +35,7 @@ struct L {
 
     // MARK: 通用设置
     var groupText: String   { t("文字", "Text") }
+    var content: String     { t("内容", "Content") }
     var prefix: String      { t("前缀", "Prefix") }
     var suffix: String      { t("后缀", "Suffix") }
     var bold: String        { t("加粗", "Bold") }

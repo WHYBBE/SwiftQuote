@@ -52,6 +52,10 @@ struct TextSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 GroupBox(s.groupText) {
                     VStack(alignment: .leading, spacing: 8) {
+                        labeledField(s.content, text: $settings.text) {
+                            // 直接编辑正文后回车，记入历史
+                            settings.pushHistory(settings.text)
+                        }
                         labeledField(s.prefix, text: $settings.prefix)
                         labeledField(s.suffix, text: $settings.suffix)
                         Toggle(s.bold, isOn: $settings.bold)
@@ -107,12 +111,14 @@ struct TextSettingsView: View {
         }
     }
 
-    private func labeledField(_ label: String, text: Binding<String>) -> some View {
+    private func labeledField(_ label: String, text: Binding<String>,
+                              onSubmit: (() -> Void)? = nil) -> some View {
         HStack {
             Text(label)
                 .frame(width: 60, alignment: .trailing)
             TextField(label, text: text)
                 .textFieldStyle(.roundedBorder)
+                .onSubmit { onSubmit?() }
         }
     }
 }
